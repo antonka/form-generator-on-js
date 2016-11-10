@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JSForGenerator2</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .js-template {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="test" style="margin-bottom: 10px;"></div>
+        
+        <div id="helloMessageContainer"></div>
+        
+        <div id="helloMessageTemplate" class="js-template">
+            <p>Hello, <b>{{login}}!</b></p>
+            <p>Your email: <b>{{email}}</b></p>
+        </div>
+        
+        <div id="userDataContainer"></div>
+        
+        <div id="formTextFieldTemplate" class="js-template">
+            <div style="margin-bottom: 10px;">
+                <label>{{label}}:</label> 
+                <input {{attributes}} >
+            </div>
+        </div>
+        
+        <div id="formButtonTemplate" class="js-template">
+            <input {{attributes}} > 
+        </div>
+        
+        <div id="userDataTemplate" class="js-template">
+            <div>Name: {{login}}, email: {{email}}</div>
+        </div>
+        
+        
+        <script src="js/all.js"></script> 
+        <script>
+            
+            document.addEventListener('DOMContentLoaded', function(event) {
+              
+              
+                var HelloView = A.View.createViewFromTemplate('helloMessageTemplate');
+        
+                var AuthForm = new A.Form({
+                    renderTo: 'test',
+                    scheme: {
+                        attributes: {
+                           id: 'authForm'
+                        }, 
+                        elements: {
+                            login: {
+                                label: 'Login',
+                                attributes: {
+                                    type: 'text',
+                                },
+                                rules: ['required'],
+                                templateId: 'formTextFieldTemplate'
+                            },
+                            email: {
+                                label: 'Email',
+                                attributes: {
+                                    type: 'text',
+                                },
+                                rules: ['required'],
+                                templateId: 'formTextFieldTemplate'
+                            },
+                            submit: {
+                                attributes: {
+                                    type: 'submit',
+                                    value: 'login'
+                                },
+                                templateId: 'formButtonTemplate'
+                            }
+                        }  
+                    }
+                });
+                
+                var UserDataView = A.View.createViewFromTemplate('userDataTemplate');
+                UserDataView.renderRowsTo('userDataContainer', [
+                    {login: 'Bill', email: 'bill@email.com'},
+                    {login: 'Anton', email: 'anton@email.com'}
+                ]);
+                
+                var AuthFormHandler = AuthForm.getController();
+//                AuthFormHandler.fill({
+//                    login: 'Test Login',
+//                    password: 'Test Password'
+//                });
+                
+                AuthFormHandler.submit = function(event, values) {
+                    HelloView.renderRowTo('helloMessageContainer', values);
+                    UserDataView.appendRowTo('userDataContainer', values);
+                };
+                
+               
+                
+                
+                /*
+                var authViewForm = new ViewForm({
+                    attributes: {
+                       id: 'authForm'
+                    }, 
+                    elements: {
+                        login: {
+                            label: 'Login',
+                            attributes: {
+                                type: 'text',
+                                placeholder: 'Login'
+                            },
+                            rules: {}
+                        },
+                        password: {
+                            label: 'Password',
+                            attributes: {
+                                type: 'password',
+                                placeholder: 'Password'
+                            },
+                            rules: {}
+                        },
+                        submit: {
+                            attributes: {
+                                type: 'submit',
+                                value: 'login'
+                            }
+                        }
+                    }  
+                });
+                authViewForm.renderTo('test');
+                
+                var authFormHandler = new FormHandler({
+                    id: 'authForm',
+                    elements: {
+                        login: {
+                            
+                        },
+                        password: {
+                            
+                        }
+                    }
+                });
+                */
+            });
+        </script>
+    </body>
+</html>
